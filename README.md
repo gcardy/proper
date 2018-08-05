@@ -56,8 +56,11 @@ Net Profit = -$25
 
 This package focuses on helping you find trades that in the long run will help you profit. The formula for this calculation is very simple: width of trade strikes * probability of being ITM >= Credit taken on the trade. Specifics are detailed below for each trade type.
 
-# Usage
+# Installation
 
+There are 2 routes that you can take in order to use the software.  If you are familar with the NodeJS/NPM ecosystem, then you probably feel more comfortable installing the software yourself.  There are also folks who may not even know what NodeJS is, but they are still interested in using this software.  In the later case, using the provided Docker will be the route that you will want to take.
+
+## NPM Installation
 You'll need NPM and NodeJs, install from [here](https://nodejs.org)
 
 Install this package
@@ -73,7 +76,45 @@ $ oa-proper
 Basic Usage: proper --data-dir
 ```
 
-Once installed you'll need put some data files in a directory for the program to analyze. Admittedly this is an Minimum Viable Product (MVP) so the process to do this is manual and a little klunky. 
+## Using the Docker Image
+
+In order to use the Docker Image, you will need to install Docker for your operating system.  With this approach, there is no need to manage the NodeJS installation, and you will simply need a CSV formatted data file with the options data.  
+
+The installation instructions provided by the Docker project are through, and so there is no use in diving into those instructions.  They are also outside the scope of this document, so please reference the links below.
+
+### Windows Installation
+
+https://docs.docker.com/docker-for-windows/install/
+
+### Mac Installation
+
+https://docs.docker.com/docker-for-mac/install/
+
+### Linux Installation
+
+It's assumed that you can locate appropriate installation instructions for your distribution, since the instructions can vary widely.
+
+Once you have Docker installed, and have verified the installation, pull down the image from Docker Hub.  The instructions may vary depending on how you interact with Docker on your operating system.  On Linux/Mac, you can open a terminal and run the following:
+
+```bash
+$ docker pull gcardamone/oa-proper:latest
+latest: Pulling from gcardamone/oa-proper
+d660b1f15b9b: Pull complete 
+46dde23c37b3: Pull complete 
+6ebaeb074589: Pull complete 
+e7428f935583: Pull complete 
+eda527043444: Pull complete 
+f3088daa8887: Pull complete 
+78a03a082983: Pull complete 
+78741e770135: Pull complete 
+f7c6cc0790a7: Pull complete 
+Digest: sha256:1410fc0edf8587b8c74bfe2d77fbb3815ad927e1c58452e6ff42f98a06f7417e
+Status: Downloaded newer image for gcardamone/oa-proper:latest
+```
+
+# Usage
+
+After you chose your installation method, you'll need put some data files in a directory for the program to analyze. Admittedly this is an Minimum Viable Product (MVP) so the process to do this is manual and a little klunky. 
 
 First I'll describe what the program expects then I'll explain how I go about doing it.
 
@@ -101,8 +142,9 @@ Each underlying stock symbol that you want to analyze should have it's option da
 
 **NOTE: the program will not calculate credit spreads over expiration months, so if you include multiple expiration months in a single file credit spreads will be calculated and listed for each month independently.**
 
-So the idea is you put all these .csv files in a directory and then run
+So the idea is you put all these .csv files in a directory and then run oa-proper.  
 
+## NPM
 ```bash
 $ oa-proper --data-dir <path to your option data directory goes here>
 ```
@@ -110,6 +152,20 @@ $ oa-proper --data-dir <path to your option data directory goes here>
 Example
 ```bash
 $ oa-proper --data-dir ~/Documents/options/
+2018-03-17-StockAndOptionQuoteForTSLA
+Strategy            Credit/Debit        Risk                Reward/Risk Ratio   FaE Cost            FaE Cost Ratio      Expiration          Strikes
+Bear Call Spread    1.53                5                   0.31                1.52                1.01                20 APR 18           340/345
+```
+
+## Docker
+
+```bash
+$ docker run --rm -v <absolute path to your option data directory goes here>:/data oa-proper
+```
+
+Example
+```bash
+$ docker run --rm -v /Users/gcard/Documents/options:/data oa-proper
 2018-03-17-StockAndOptionQuoteForTSLA
 Strategy            Credit/Debit        Risk                Reward/Risk Ratio   FaE Cost            FaE Cost Ratio      Expiration          Strikes
 Bear Call Spread    1.53                5                   0.31                1.52                1.01                20 APR 18           340/345
@@ -197,6 +253,12 @@ Once you have the cleaned up .csv file(s) in your option data directory run the 
 
 ```bash
 $ oa-proper --data-dir <path to dir>
+```
+ 
+or, alternatively
+
+```bash
+$  docker run --rm -v <path to dir>:/data oa-proper
 ```
 
 # Contributing
